@@ -1,0 +1,81 @@
+<ion-header>
+
+  <ion-navbar color="dark">
+    <ion-title>Créer une news</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="closeModal()"><ion-icon name="close"></ion-icon></button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <!-- <form (ngSubmit)="register()" #regForm="ngForm">
+    <ion-list>
+
+      <ion-item>
+        <ion-label fixed>Photo</ion-label>
+        <ion-avatar item-end>
+          <img src="{{imgPreview}}" (click)="getPhoto()">
+        </ion-avatar>
+      </ion-item>
+
+      <ion-item>
+        <ion-label color="dark" floating>Email</ion-label>
+        <ion-input type="email" name="email" required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label color="dark" floating>Password</ion-label>
+        <ion-input type="password" name="password" required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label color="dark" floating>Full Name</ion-label>
+        <ion-input type="text" name="fullname" required></ion-input>
+      </ion-item>
+
+      <ion-item margin-top>
+          <ion-label color="dark">Publier sur Facebook</ion-label>
+          <ion-checkbox></ion-checkbox>
+      </ion-item>
+
+    </ion-list>
+    <div padding>
+      <button ion-button full color="dark">Ajouter</button>
+    </div>
+  </form> -->
+
+  <form [formGroup]="infoForm">
+    <ion-item>
+      <ion-label position="floating">Info Title</ion-label>
+      <ion-input type="text" formControlName="info_title"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Info Description</ion-label>
+      <ion-input type="text" formControlName="info_description"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-row>
+        <ion-col width-50>
+          <button ion-button color="danger" type="button" full round large (click)="takePhoto()">
+              <ion-icon name="md-camera"></ion-icon>
+          </button>
+        </ion-col>
+        <ion-col width-50>
+          <button ion-button color="secondary" type="button" full round large (click)="selectPhoto()">
+              <ion-icon name="md-image"></ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+    <ion-item>
+      <img class="img-responsive" src="{{ myPhotoURL }}" />
+    </ion-item>
+
+    <button ion-button shape="round" color="primary" expand="block" [disabled]="!infoForm.valid" (click)="saveInfo()">Save</button>
+  </form>
+
+</ion-content>
