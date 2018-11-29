@@ -48,34 +48,47 @@
   </form> -->
 
   <form [formGroup]="infoForm">
-    <ion-item>
-      <ion-label position="floating">Info Title</ion-label>
-      <ion-input type="text" formControlName="info_title"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Info Description</ion-label>
-      <ion-input type="text" formControlName="info_description"></ion-input>
+    <ion-item no-padding>
+      <ion-label stacked color="dark">Titre</ion-label>
+      <ion-input type="text" formControlName="title"></ion-input>
     </ion-item>
 
-    <ion-item>
+    <ion-item no-padding>
+      <ion-label stacked color="dark">Description</ion-label>
+      <ion-textarea formControlName="description"></ion-textarea>
+    </ion-item>
+
+    <ion-item no-padding class="item-borderless">
+      <ion-label stacked color="dark">Ajouter des photos</ion-label>
+    </ion-item>
+
+    <ion-item no-padding>
       <ion-row>
         <ion-col width-50>
-          <button ion-button color="danger" type="button" full round large (click)="takePhoto()">
-              <ion-icon name="md-camera"></ion-icon>
+          <button ion-button full color="light" (click)="takePhoto()">
+            <ion-icon name="md-camera"></ion-icon>
           </button>
         </ion-col>
         <ion-col width-50>
-          <button ion-button color="secondary" type="button" full round large (click)="selectPhoto()">
-              <ion-icon name="md-image"></ion-icon>
+          <button ion-button full color="dark" (click)="selectPhoto()">
+            <ion-icon name="md-image"></ion-icon>
           </button>
         </ion-col>
       </ion-row>
     </ion-item>
-    <ion-item>
-      <img class="img-responsive" src="{{ myPhotoURL }}" />
+
+    <ion-item *ngIf="myPhotoURL?.length > 0" no-padding>
+      <ion-scroll scrollX="true" style="width:100vw; height:50px" >
+        <ion-row nowrap class="headerChip">
+          <div *ngFor="let photo of myPhotoURL; let idx = index">
+            <img class="img-responsive" src="{{ photo }}" />
+            <ion-input type="hidden" formControlName="photos" value="{{ photo }}"></ion-input>
+          </div>
+        </ion-row>
+      </ion-scroll>
     </ion-item>
 
-    <button ion-button shape="round" color="primary" expand="block" [disabled]="!infoForm.valid" (click)="saveInfo()">Save</button>
+    <button margin-top ion-button full color="dark" [disabled]="!infoForm.valid" (click)="saveInfo()">Enregistrer</button>
   </form>
 
 </ion-content>

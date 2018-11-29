@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, ToastController, LoadingController } from 'ionic-angular';
 
 import { Camera } from '@ionic-native/camera';
 
@@ -13,12 +13,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class AddPostModalPage {
 
-  ref = firebase.database().ref('infos/');
+  ref = firebase.database().ref('posts/');
   infoForm: FormGroup;
 
   public myPhotosRef: any;
   public myPhoto: any;
-  public myPhotoURL: any;
+  public myPhotoURL: [any];
+
+  loading: any;
 
   constructor(
     public navCtrl: NavController, 
@@ -26,14 +28,25 @@ export class AddPostModalPage {
     private view: ViewController, 
     private formBuilder: FormBuilder, 
     private toast: ToastController,
-    private camera: Camera) {
+    private camera: Camera,
+    public loadingCtrl: LoadingController,) {
 
     this.infoForm = this.formBuilder.group({
-      'info_title' : [null, Validators.required],
-      'info_description' : [null, Validators.required]
+      'title' : [null, Validators.required],
+      'description' : [null, Validators.required],
+      'photos' : this.formBuilder.array([
+        this.initPhotosFields()
+      ])
     });
 
     this.myPhotosRef = firebase.storage().ref('/Photos/');
+  }
+
+  initPhotosFields() : FormGroup
+  {
+     return this.formBuilder.group({
+        name : [null]
+     });
   }
 
   ionViewDidLoad() {
@@ -44,11 +57,21 @@ export class AddPostModalPage {
     this.view.dismiss()
   }
 
+  showLoader(){
+    this.loading = this.loadingCtrl.create({
+        content: 'Envoi de la photo...'
+    });
+  
+    this.loading.present();
+  }
+
   saveInfo(){
-    let newInfo = firebase.database().ref('infos/').push();
+    this.showLoader();
+    let newInfo = firebase.database().ref('posts/').push();
     newInfo.set(this.infoForm.value);
+    this.loading.dismiss();
     let toast = this.toast.create({
-      message: 'The infos was created successfully',
+      message: 'La publication a été sauvegardée',
       duration: 3000
     });
     toast.present();
@@ -85,10 +108,12 @@ export class AddPostModalPage {
   }
  
   private uploadPhoto(): void {
+    this.showLoader();
     this.myPhotosRef.child(this.generateUUID()).child('myPhoto.png')
       .putString(this.myPhoto, 'base64', { contentType: 'image/png' })
       .then((savedPicture) => {
-        this.myPhotoURL = savedPicture.downloadURL;
+        this.myPhotoURL.push(savedPicture.downloadURL);
+        this.loading.dismiss();
       });
   }
  
